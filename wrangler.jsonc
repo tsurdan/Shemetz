@@ -1,0 +1,30 @@
+{
+	"$schema": "./node_modules/wrangler/config-schema.json",
+	"name": "shemetz",
+	"main": ".open-next/worker.js",
+	// Keep this at (or after) today's date - see https://developers.cloudflare.com/workers/configuration/compatibility-dates/
+	"compatibility_date": "2026-08-20",
+	"compatibility_flags": ["nodejs_compat"],
+	"assets": {
+		"directory": ".open-next/assets",
+		"binding": "ASSETS"
+	},
+	// TODO (Phase 0): run `npx wrangler d1 create shemetz-db` and paste the real database_id below
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "shemetz-db",
+			"database_id": "REPLACE_WITH_D1_DATABASE_ID"
+		}
+	],
+	// TODO (Phase 0): run `npx wrangler r2 bucket create shemetz-media` (bucket name must already exist)
+	"r2_buckets": [
+		{
+			"binding": "MEDIA",
+			"bucket_name": "shemetz-media"
+		}
+	],
+	"observability": {
+		"enabled": true
+	}
+}

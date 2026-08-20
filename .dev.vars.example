@@ -1,0 +1,13 @@
+# Copy this file to .dev.vars for local development (wrangler/OpenNext preview reads .dev.vars automatically).
+# Never commit the real .dev.vars file - it's already in .gitignore.
+# In production, set these as Worker secrets instead: npx wrangler secret put <NAME>
+
+# Google OAuth (Phase 0: create an OAuth Client ID in Google Cloud Console, "Web application" type)
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+
+# Random 32+ char secret used to sign writer/admin session cookies (JWT). Generate with: openssl rand -hex 32
+SESSION_SECRET=
+
+# Resend (Phase 7: newsletter sending) - https://resend.com/api-keys
+RESEND_API_KEY=
