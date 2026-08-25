@@ -2,6 +2,8 @@ import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { getCurrentUser } from "@/lib/session";
 import { redirect } from "next/navigation";
 import { approveArticle, rejectArticle, unpublishArticle } from "./actions";
+import { Button } from "@/components/button";
+import { Check, X, EyeOff } from "lucide-react";
 
 type PendingRow = {
   id: number;
@@ -64,9 +66,10 @@ export default async function AdminPage() {
               <div className="mt-3 flex flex-wrap items-center gap-3">
                 <form action={approveArticle}>
                   <input type="hidden" name="id" value={article.id} />
-                  <button type="submit" className="rounded bg-black px-3 py-1.5 text-sm text-white">
+                  <Button type="submit" variant="primary">
+                    <Check className="h-4 w-4" />
                     אישור ופרסום
-                  </button>
+                  </Button>
                 </form>
                 <form action={rejectArticle} className="flex items-center gap-2">
                   <input type="hidden" name="id" value={article.id} />
@@ -75,9 +78,10 @@ export default async function AdminPage() {
                     placeholder="הערת דחייה (אופציונלי)"
                     className="rounded border border-black/15 px-2 py-1.5 text-sm"
                   />
-                  <button type="submit" className="rounded border border-black/15 px-3 py-1.5 text-sm">
+                  <Button type="submit" variant="danger">
+                    <X className="h-4 w-4" />
                     דחייה
-                  </button>
+                  </Button>
                 </form>
               </div>
             </li>
@@ -98,9 +102,10 @@ export default async function AdminPage() {
               </div>
               <form action={unpublishArticle}>
                 <input type="hidden" name="id" value={article.id} />
-                <button type="submit" className="rounded border border-black/15 px-3 py-1.5 text-sm">
+                <Button type="submit" variant="danger">
+                  <EyeOff className="h-4 w-4" />
                   הסרה מהאתר
-                </button>
+                </Button>
               </form>
             </li>
           ))}

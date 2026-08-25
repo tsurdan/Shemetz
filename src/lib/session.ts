@@ -9,6 +9,7 @@ export type SessionPayload = {
   userId: number;
   email: string;
   name: string;
+  avatarUrl: string | null;
   role: "writer" | "admin";
 };
 

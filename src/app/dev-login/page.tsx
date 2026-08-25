@@ -1,5 +1,6 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { signInAs } from "./actions";
+import { ShieldCheck, PenLine } from "lucide-react";
 
 type UserRow = { id: number; name: string; email: string; role: string };
 
@@ -22,10 +23,17 @@ export default async function DevLoginPage() {
               <input type="hidden" name="userId" value={user.id} />
               <button
                 type="submit"
-                className="w-full rounded border border-black/10 px-4 py-3 text-right hover:bg-black/[.03]"
+                className="flex w-full items-center gap-3 rounded border border-black/10 px-4 py-3 text-right hover:bg-black/[.03]"
               >
-                <span className="font-medium">{user.name}</span>{" "}
-                <span className="text-black/50">({user.role === "admin" ? "מנהל" : "כותב"})</span>
+                {user.role === "admin" ? (
+                  <ShieldCheck className="h-5 w-5 text-emerald-700" />
+                ) : (
+                  <PenLine className="h-5 w-5 text-black/40" />
+                )}
+                <span>
+                  <span className="font-medium">{user.name}</span>{" "}
+                  <span className="text-black/50">({user.role === "admin" ? "מנהל" : "כותב"})</span>
+                </span>
               </button>
             </form>
           </li>

@@ -8,10 +8,10 @@ export async function signInAs(formData: FormData) {
   const userId = Number(formData.get("userId"));
   const { env } = await getCloudflareContext({ async: true });
   const user = await env.DB.prepare(
-    `SELECT id, email, name, role FROM users WHERE id = ?1`
+    `SELECT id, email, name, avatar_url, role FROM users WHERE id = ?1`
   )
     .bind(userId)
-    .first<{ id: number; email: string; name: string; role: "writer" | "admin" }>();
+    .first<{ id: number; email: string; name: string; avatar_url: string | null; role: "writer" | "admin" }>();
 
   if (!user) {
     throw new Error("User not found");
@@ -21,6 +21,7 @@ export async function signInAs(formData: FormData) {
     userId: user.id,
     email: user.email,
     name: user.name,
+    avatarUrl: user.avatar_url,
     role: user.role,
   });
   await setSessionCookie(token);

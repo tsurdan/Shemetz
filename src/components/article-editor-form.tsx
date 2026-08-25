@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { ARTICLE_WORD_LIMIT, countWords } from "@/lib/constants";
+import { Button } from "@/components/button";
+import { Save, Send } from "lucide-react";
 
 type Section = { id: number; name: string };
 
@@ -73,23 +75,14 @@ export function ArticleEditorForm({
       </p>
 
       <div className="flex gap-3">
-        <button
-          type="submit"
-          name="intent"
-          value="draft"
-          className="rounded border border-black/15 px-4 py-2"
-        >
+        <Button type="submit" name="intent" value="draft" variant="neutral">
+          <Save className="h-4 w-4" />
           שמירת טיוטה
-        </button>
-        <button
-          type="submit"
-          name="intent"
-          value="submit"
-          disabled={overLimit}
-          className="rounded bg-black px-4 py-2 text-white disabled:opacity-40"
-        >
+        </Button>
+        <Button type="submit" name="intent" value="submit" disabled={overLimit} variant="primary">
+          <Send className="h-4 w-4" />
           שליחה לאישור
-        </button>
+        </Button>
       </div>
     </form>
   );
