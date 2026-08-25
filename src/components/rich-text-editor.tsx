@@ -4,7 +4,6 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import { BubbleMenu } from "@tiptap/react/menus";
 import StarterKit from "@tiptap/starter-kit";
 import TiptapImage from "@tiptap/extension-image";
-import TiptapLink from "@tiptap/extension-link";
 import Placeholder from "@tiptap/extension-placeholder";
 import { useRef, type ReactNode } from "react";
 import {
@@ -31,9 +30,10 @@ export function RichTextEditor({
   const editor = useEditor({
     immediatelyRender: false,
     extensions: [
-      StarterKit,
+      StarterKit.configure({
+        link: { openOnClick: false },
+      }),
       TiptapImage,
-      TiptapLink.configure({ openOnClick: false }),
       Placeholder.configure({ placeholder: "כתבו את המאמר כאן..." }),
     ],
     content: initialContent,
