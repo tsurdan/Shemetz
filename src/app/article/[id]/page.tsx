@@ -1,6 +1,5 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { notFound } from "next/navigation";
-import { plainTextToSafeHtml } from "@/lib/constants";
 
 type ArticleRow = {
   id: number;
@@ -50,10 +49,10 @@ export default async function ArticlePage({
         )}
         <span className="text-sm text-black/70">{article.author_name}</span>
       </div>
-      {/* body_content is plain text today (Phase 3's real rich-text editor will store HTML directly, sanitized). */}
+      {/* body_content is sanitized HTML from the rich-text editor (sanitize-html on save, see write/actions.ts). */}
       <div
         className="prose mt-8 max-w-none"
-        dangerouslySetInnerHTML={{ __html: plainTextToSafeHtml(article.body_content) }}
+        dangerouslySetInnerHTML={{ __html: article.body_content }}
       />
     </article>
   );

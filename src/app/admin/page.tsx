@@ -1,9 +1,9 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { getCurrentUser } from "@/lib/session";
 import { redirect } from "next/navigation";
-import { approveArticle, rejectArticle, unpublishArticle } from "./actions";
+import { approveArticle, rejectArticle, unpublishArticle, addWriter } from "./actions";
 import { Button } from "@/components/button";
-import { Check, X, EyeOff } from "lucide-react";
+import { Check, X, EyeOff, UserPlus } from "lucide-react";
 
 type PendingRow = {
   id: number;
@@ -17,6 +17,14 @@ type PublishedRow = {
   id: number;
   title: string;
   author_name: string;
+};
+
+type WriterRow = {
+  id: number;
+  name: string;
+  email: string;
+  role: string;
+  google_sub: string;
 };
 
 export default async function AdminPage() {
@@ -47,6 +55,10 @@ export default async function AdminPage() {
      WHERE articles.status = 'published'
      ORDER BY articles.published_at DESC`
   ).all<PublishedRow>();
+
+  const { results: writers } = await env.DB.prepare(
+    `SELECT id, name, email, role, google_sub FROM users ORDER BY id`
+  ).all<WriterRow>();
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-12">
@@ -111,6 +123,48 @@ export default async function AdminPage() {
           ))}
         </ul>
       )}
+
+      <h2 className="mt-10 text-lg font-semibold">כותבים מאושרים</h2>
+      <p className="mt-1 text-sm text-black/60">
+        הוסיפו כתובת אימייל כאן לפני שהכותב/ת מתחבר/ת לראשונה עם Google - כדי שיוכלו להתחבר בכלל.
+      </p>
+      <form action={addWriter} className="mt-4 flex flex-wrap items-end gap-3">
+        <div>
+          <label className="block text-xs text-black/60">שם</label>
+          <input name="name" required className="rounded border border-black/15 px-2 py-1.5 text-sm" />
+        </div>
+        <div>
+          <label className="block text-xs text-black/60">אימייל</label>
+          <input name="email" type="email" required className="rounded border border-black/15 px-2 py-1.5 text-sm" />
+        </div>
+        <div>
+          <label className="block text-xs text-black/60">תפקיד</label>
+          <select name="role" className="rounded border border-black/15 px-2 py-1.5 text-sm">
+            <option value="writer">כותב/ת</option>
+            <option value="admin">מנהל/ת</option>
+          </select>
+        </div>
+        <Button type="submit" variant="primary">
+          <UserPlus className="h-4 w-4" />
+          הוספת כותב/ת
+        </Button>
+      </form>
+      <ul className="mt-4 space-y-2">
+        {writers.map((writer) => (
+          <li key={writer.id} className="flex items-center justify-between rounded border border-black/10 px-4 py-2 text-sm">
+            <span>
+              <span className="font-medium">{writer.name}</span>{" "}
+              <span className="text-black/50">({writer.email})</span>
+            </span>
+            <span className="flex items-center gap-2 text-black/50">
+              {writer.role === "admin" ? "מנהל/ת" : "כותב/ת"}
+              {writer.google_sub.startsWith("pending:") && (
+                <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs text-amber-800">טרם התחבר/ה</span>
+              )}
+            </span>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

@@ -48,3 +48,20 @@ export async function unpublishArticle(formData: FormData) {
     .run();
   revalidatePath("/admin");
 }
+
+export async function addWriter(formData: FormData) {
+  await requireAdmin();
+  const name = String(formData.get("name") ?? "").trim();
+  const email = String(formData.get("email") ?? "").trim().toLowerCase();
+  const role = formData.get("role") === "admin" ? "admin" : "writer";
+  if (!name || !email) throw new Error("שם ואימייל הם שדות חובה");
+
+  const { env } = await getCloudflareContext({ async: true });
+  // google_sub is NOT NULL/UNIQUE - a placeholder is used until the person's first real Google login overwrites it.
+  await env.DB.prepare(
+    `INSERT INTO users (google_sub, email, name, role) VALUES (?1, ?2, ?3, ?4)`
+  )
+    .bind(`pending:${email}`, email, name, role)
+    .run();
+  revalidatePath("/admin");
+}

@@ -49,7 +49,7 @@ export default async function EditArticlePage({
       <div className="mx-auto max-w-3xl px-4 py-12">
         <h1 className="text-2xl font-bold">{article.title}</h1>
         <p className="mt-2 text-black/60">סטטוס: {STATUS_LABELS[article.status] ?? article.status}</p>
-        <p className="mt-6 whitespace-pre-wrap">{article.body_content}</p>
+        <div className="prose mt-6 max-w-none" dangerouslySetInnerHTML={{ __html: article.body_content }} />
       </div>
     );
   }

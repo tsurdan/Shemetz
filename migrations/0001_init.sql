@@ -3,6 +3,7 @@
 
 CREATE TABLE users (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	-- Admin-invited writers get a "pending:<email>" placeholder here until their first real Google login overwrites it with the real sub.
 	google_sub TEXT NOT NULL UNIQUE,
 	email TEXT NOT NULL UNIQUE,
 	name TEXT NOT NULL,
