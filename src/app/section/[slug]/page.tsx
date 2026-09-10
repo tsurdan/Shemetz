@@ -6,6 +6,7 @@ type ArticleRow = {
   id: number;
   title: string;
   subtitle: string | null;
+  cover_image_url: string | null;
 };
 
 export default async function SectionPage({
@@ -26,7 +27,7 @@ export default async function SectionPage({
   }
 
   const { results: articles } = await env.DB.prepare(
-    `SELECT id, title, subtitle FROM articles
+    `SELECT id, title, subtitle, cover_image_url FROM articles
      WHERE section_id = ?1 AND status = 'published'
      ORDER BY published_at DESC`
   )
@@ -41,11 +42,19 @@ export default async function SectionPage({
       ) : (
         <ul className="mt-6 space-y-6">
           {articles.map((article) => (
-            <li key={article.id} className="border-b border-black/10 pb-6">
-              <Link href={`/article/${article.id}`} className="text-lg font-semibold hover:underline">
-                {article.title}
-              </Link>
-              {article.subtitle && <p className="text-black/60">{article.subtitle}</p>}
+            <li key={article.id} className="flex gap-4 border-b border-black/10 pb-6">
+              {article.cover_image_url && (
+                <Link href={`/article/${article.id}`} className="shrink-0">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={article.cover_image_url} alt="" className="h-24 w-24 rounded object-cover" />
+                </Link>
+              )}
+              <div>
+                <Link href={`/article/${article.id}`} className="text-lg font-semibold hover:underline">
+                  {article.title}
+                </Link>
+                {article.subtitle && <p className="text-black/60">{article.subtitle}</p>}
+              </div>
             </li>
           ))}
         </ul>

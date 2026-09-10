@@ -17,3 +17,9 @@ body {
   color: var(--foreground);
   font-family: var(--font-heebo), Arial, Helvetica, sans-serif;
 }
+
+/* Tailwind Typography auto-inserts decorative quote characters around blockquotes - the "quote" style should be purely visual (italic/border), not literal quote marks mixed into the writer's own text. */
+.prose blockquote p:first-of-type::before,
+.prose blockquote p:last-of-type::after {
+  content: none;
+}

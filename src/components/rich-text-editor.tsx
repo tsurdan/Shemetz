@@ -1,7 +1,6 @@
 "use client";
 
 import { useEditor, EditorContent } from "@tiptap/react";
-import { BubbleMenu } from "@tiptap/react/menus";
 import StarterKit from "@tiptap/starter-kit";
 import TiptapImage from "@tiptap/extension-image";
 import Placeholder from "@tiptap/extension-placeholder";
@@ -90,12 +89,6 @@ export function RichTextEditor({
 
   return (
     <div className="rounded border border-black/15">
-      <BubbleMenu editor={editor} className="flex gap-1 rounded-lg border border-black/10 bg-white p-1 shadow-lg">
-        {toolbarButton(editor.isActive("bold"), () => editor.chain().focus().toggleBold().run(), <Bold className="h-4 w-4" />, "מודגש")}
-        {toolbarButton(editor.isActive("italic"), () => editor.chain().focus().toggleItalic().run(), <Italic className="h-4 w-4" />, "נטוי")}
-        {toolbarButton(editor.isActive("link"), toggleLink, <Link2 className="h-4 w-4" />, "קישור")}
-      </BubbleMenu>
-
       <div className="flex flex-wrap items-center gap-1 border-b border-black/10 bg-black/[.02] p-1.5">
         {toolbarButton(editor.isActive("bold"), () => editor.chain().focus().toggleBold().run(), <Bold className="h-4 w-4" />, "מודגש")}
         {toolbarButton(editor.isActive("italic"), () => editor.chain().focus().toggleItalic().run(), <Italic className="h-4 w-4" />, "נטוי")}

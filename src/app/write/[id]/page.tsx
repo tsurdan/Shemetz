@@ -13,6 +13,7 @@ type ArticleRow = {
   body_content: string;
   status: string;
   rejection_note: string | null;
+  cover_image_url: string | null;
 };
 
 const STATUS_LABELS: Record<string, string> = {
@@ -33,7 +34,7 @@ export default async function EditArticlePage({
 
   const { env } = await getCloudflareContext({ async: true });
   const article = await env.DB.prepare(
-    `SELECT id, author_id, title, subtitle, section_id, body_content, status, rejection_note FROM articles WHERE id = ?1`
+    `SELECT id, author_id, title, subtitle, section_id, body_content, status, rejection_note, cover_image_url FROM articles WHERE id = ?1`
   )
     .bind(id)
     .first<ArticleRow>();
@@ -73,6 +74,7 @@ export default async function EditArticlePage({
         initialSubtitle={article.subtitle ?? ""}
         initialSectionId={article.section_id}
         initialBody={article.body_content}
+        initialCoverImageUrl={article.cover_image_url}
         sections={sections}
       />
     </div>

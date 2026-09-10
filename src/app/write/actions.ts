@@ -52,6 +52,7 @@ export async function saveArticle(formData: FormData) {
   const id = String(formData.get("id") ?? "");
   const title = String(formData.get("title") ?? "").trim();
   const subtitle = String(formData.get("subtitle") ?? "").trim() || null;
+  const coverImageUrl = String(formData.get("coverImageUrl") ?? "").trim() || null;
   const rawBodyHtml = String(formData.get("body") ?? "");
   const intent = String(formData.get("intent") ?? "draft"); // "draft" | "submit"
 
@@ -83,19 +84,19 @@ export async function saveArticle(formData: FormData) {
     }
     await env.DB.prepare(
       `UPDATE articles
-       SET title=?1, subtitle=?2, section_id=?3, body_content=?4, word_count=?5, status=?6, rejection_note=NULL,
+       SET title=?1, subtitle=?2, section_id=?3, body_content=?4, word_count=?5, status=?6, rejection_note=NULL, cover_image_url=?7,
            submitted_at = CASE WHEN ?6 = 'pending_review' THEN datetime('now') ELSE submitted_at END,
            updated_at = datetime('now')
-       WHERE id=?7`
+       WHERE id=?8`
     )
-      .bind(title, subtitle, sectionId, bodyHtml, wordCount, status, id)
+      .bind(title, subtitle, sectionId, bodyHtml, wordCount, status, coverImageUrl, id)
       .run();
   } else {
     await env.DB.prepare(
-      `INSERT INTO articles (issue_id, author_id, section_id, title, subtitle, body_content, word_count, status, submitted_at)
-       VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, CASE WHEN ?8 = 'pending_review' THEN datetime('now') ELSE NULL END)`
+      `INSERT INTO articles (issue_id, author_id, section_id, title, subtitle, body_content, word_count, status, cover_image_url, submitted_at)
+       VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, CASE WHEN ?8 = 'pending_review' THEN datetime('now') ELSE NULL END)`
     )
-      .bind(issue.id, user.userId, sectionId, title, subtitle, bodyHtml, wordCount, status)
+      .bind(issue.id, user.userId, sectionId, title, subtitle, bodyHtml, wordCount, status, coverImageUrl)
       .run();
   }
 

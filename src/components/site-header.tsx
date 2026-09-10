@@ -2,7 +2,8 @@ import Link from "next/link";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { getCurrentUser } from "@/lib/session";
 import { signOut } from "@/lib/session-actions";
-import { PenLine, ShieldCheck, LogIn, LogOut, ChevronDown } from "lucide-react";
+import { PenLine, ShieldCheck, LogIn, LogOut } from "lucide-react";
+import { SectionsMenu } from "@/components/sections-menu";
 
 export async function SiteHeader() {
   const [user, { env }] = await Promise.all([getCurrentUser(), getCloudflareContext({ async: true })]);
@@ -18,23 +19,7 @@ export async function SiteHeader() {
             שמץ
           </Link>
           <nav className="hidden items-center gap-5 border-e border-black/10 pe-6 text-sm text-black/70 sm:flex">
-            <details className="group relative">
-              <summary className="flex cursor-pointer list-none items-center gap-1 hover:text-black [&::-webkit-details-marker]:hidden">
-                נושאים
-                <ChevronDown className="h-3.5 w-3.5 transition-transform group-open:rotate-180" />
-              </summary>
-              <div className="absolute end-0 top-full z-30 mt-2 w-48 rounded-lg border border-black/10 bg-white p-1 shadow-lg">
-                {sections.map((section) => (
-                  <Link
-                    key={section.slug}
-                    href={`/section/${section.slug}`}
-                    className="block rounded px-3 py-2 hover:bg-black/[.04]"
-                  >
-                    {section.name}
-                  </Link>
-                ))}
-              </div>
-            </details>
+            <SectionsMenu sections={sections} />
             <Link href="/archive" className="hover:text-black">
               גיליונות קודמים
             </Link>
