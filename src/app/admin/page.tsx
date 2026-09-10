@@ -1,6 +1,7 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { getCurrentUser } from "@/lib/session";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { approveArticle, rejectArticle, unpublishArticle, addWriter, openIssue, closeIssue } from "./actions";
 import { Button } from "@/components/button";
 import { Check, X, EyeOff, UserPlus, BookOpen, Lock } from "lucide-react";
@@ -18,12 +19,14 @@ type PendingRow = {
   word_count: number;
   author_name: string;
   section_name: string;
+  issue_title: string;
 };
 
 type PublishedRow = {
   id: number;
   title: string;
   author_name: string;
+  issue_title: string;
 };
 
 type WriterRow = {
@@ -51,18 +54,21 @@ export default async function AdminPage() {
   ).first<IssueRow>();
 
   const { results: pending } = await env.DB.prepare(
-    `SELECT articles.id, articles.title, articles.word_count, users.name AS author_name, sections.name AS section_name
+    `SELECT articles.id, articles.title, articles.word_count, users.name AS author_name, sections.name AS section_name,
+            issues.title AS issue_title
      FROM articles
      JOIN users ON users.id = articles.author_id
      JOIN sections ON sections.id = articles.section_id
+     JOIN issues ON issues.id = articles.issue_id
      WHERE articles.status = 'pending_review'
      ORDER BY articles.submitted_at ASC`
   ).all<PendingRow>();
 
   const { results: published } = await env.DB.prepare(
-    `SELECT articles.id, articles.title, users.name AS author_name
+    `SELECT articles.id, articles.title, users.name AS author_name, issues.title AS issue_title
      FROM articles
      JOIN users ON users.id = articles.author_id
+     JOIN issues ON issues.id = articles.issue_id
      WHERE articles.status = 'published'
      ORDER BY articles.published_at DESC`
   ).all<PublishedRow>();
@@ -134,9 +140,11 @@ export default async function AdminPage() {
         <ul className="mt-4 space-y-4">
           {pending.map((article) => (
             <li key={article.id} className="rounded border border-black/10 px-4 py-3">
-              <div className="font-medium">{article.title}</div>
+              <Link href={`/admin/articles/${article.id}`} className="font-medium hover:underline">
+                {article.title}
+              </Link>
               <div className="text-sm text-black/60">
-                {article.author_name} · {article.section_name} · {article.word_count} מילים
+                {article.author_name} · {article.section_name} · {article.issue_title} · {article.word_count} מילים
               </div>
               <div className="mt-3 flex flex-wrap items-center gap-3">
                 <form action={approveArticle}>
@@ -172,8 +180,12 @@ export default async function AdminPage() {
           {published.map((article) => (
             <li key={article.id} className="flex items-center justify-between rounded border border-black/10 px-4 py-3">
               <div>
-                <div className="font-medium">{article.title}</div>
-                <div className="text-sm text-black/60">{article.author_name}</div>
+                <Link href={`/admin/articles/${article.id}`} className="font-medium hover:underline">
+                  {article.title}
+                </Link>
+                <div className="text-sm text-black/60">
+                  {article.author_name} · {article.issue_title}
+                </div>
               </div>
               <form action={unpublishArticle}>
                 <input type="hidden" name="id" value={article.id} />
