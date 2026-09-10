@@ -1,5 +1,5 @@
--- LOCAL DEV ONLY sample content, so the homepage has something to show. Not meant for production.
--- Run with: npx wrangler d1 execute shemetz-db --local --file=./migrations/dev_seed_sample_content.sql
+-- LOCAL DEV ONLY sample content, so the homepage has something to show. Never run this against --remote/production.
+-- Run with: npx wrangler d1 execute shemetz-db --local --file=./migrations/dev-only/dev_seed_sample_content.sql
 
 INSERT INTO issues (month, year, title, status) VALUES (8, 2026, 'גיליון אוגוסט 2026', 'open');
 

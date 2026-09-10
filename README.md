@@ -22,6 +22,8 @@ Website for a monthly bulletin written by a small group of writers, covering top
    npx wrangler d1 execute shemetz-db --remote --file=./migrations/0002_media_files.sql
    npx wrangler d1 execute shemetz-db --remote --file=./migrations/seed.sql
    ```
+   `migrations/dev-only/` contains fake test data (a dummy admin, dummy articles) for local development only -
+   never run those against `--remote`/production.
 5. Create a Google OAuth Client ID (type: **Web application**) in [Google Cloud Console](https://console.cloud.google.com/apis/credentials):
    - Authorized redirect URIs: add both `http://localhost:3000/api/auth/google/callback` (local dev) and `https://<your-production-domain>/api/auth/google/callback`.
    - Copy the Client ID and Client Secret into `.dev.vars` (`GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET`), and set the same as Worker secrets in production (`npx wrangler secret put GOOGLE_CLIENT_ID`, etc.).
