@@ -50,7 +50,15 @@ export default async function EditArticlePage({
       <div className="mx-auto max-w-3xl px-4 py-12">
         <h1 className="text-2xl font-bold">{article.title}</h1>
         <p className="mt-2 text-black/60">סטטוס: {STATUS_LABELS[article.status] ?? article.status}</p>
-        <div className="prose mt-6 max-w-none" dangerouslySetInnerHTML={{ __html: article.body_content }} />
+        {article.cover_image_url && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={article.cover_image_url}
+            alt=""
+            className="mt-6 h-auto w-full rounded-lg object-cover"
+          />
+        )}
+        <div className="prose mt-8 max-w-none" dangerouslySetInnerHTML={{ __html: article.body_content }} />
       </div>
     );
   }

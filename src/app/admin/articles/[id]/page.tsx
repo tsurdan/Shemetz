@@ -11,6 +11,7 @@ type ArticleRow = {
   title: string;
   subtitle: string | null;
   body_content: string;
+  cover_image_url: string | null;
   status: string;
   word_count: number;
   author_name: string;
@@ -38,7 +39,7 @@ export default async function AdminArticlePreviewPage({
   const { id } = await params;
   const { env } = await getCloudflareContext({ async: true });
   const article = await env.DB.prepare(
-    `SELECT articles.id, articles.title, articles.subtitle, articles.body_content, articles.status, articles.word_count,
+    `SELECT articles.id, articles.title, articles.subtitle, articles.body_content, articles.cover_image_url, articles.status, articles.word_count,
             users.name AS author_name, sections.name AS section_name,
             issues.title AS issue_title, issues.month AS issue_month, issues.year AS issue_year
      FROM articles
@@ -68,6 +69,14 @@ export default async function AdminArticlePreviewPage({
 
       <h1 className="mt-4 text-3xl font-bold">{article.title}</h1>
       {article.subtitle && <p className="mt-2 text-lg text-black/60">{article.subtitle}</p>}
+      {article.cover_image_url && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={article.cover_image_url}
+          alt=""
+          className="mt-6 h-auto w-full rounded-lg object-cover"
+        />
+      )}
       <div className="prose mt-8 max-w-none" dangerouslySetInnerHTML={{ __html: article.body_content }} />
 
       {article.status === "pending_review" && (

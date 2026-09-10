@@ -69,8 +69,9 @@ export function CoverImageUploader({
 
       {url ? (
         <div className="relative">
+          {/* Same "h-auto w-full rounded-lg object-cover" hero style used on the published article page, so what you see here is what readers will see. */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={url} alt="" className="h-40 w-full rounded object-cover" />
+          <img src={url} alt="" className="h-auto w-full rounded-lg object-cover" />
           <button
             type="button"
             onClick={() => setUrl(null)}
