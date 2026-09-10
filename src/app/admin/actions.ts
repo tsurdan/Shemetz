@@ -65,3 +65,37 @@ export async function addWriter(formData: FormData) {
     .run();
   revalidatePath("/admin");
 }
+
+export async function openIssue(formData: FormData) {
+  await requireAdmin();
+  const month = Number(formData.get("month"));
+  const year = Number(formData.get("year"));
+  const title = String(formData.get("title") ?? "").trim();
+  if (!month || month < 1 || month > 12 || !year || !title) {
+    throw new Error("חודש, שנה וכותרת הם שדות חובה");
+  }
+
+  const { env } = await getCloudflareContext({ async: true });
+  const existing = await env.DB.prepare(`SELECT id FROM issues WHERE status = 'open'`).first();
+  if (existing) {
+    throw new Error("כבר יש גיליון פתוח - יש לסגור אותו לפני פתיחת גיליון חדש");
+  }
+
+  await env.DB.prepare(`INSERT INTO issues (month, year, title, status) VALUES (?1, ?2, ?3, 'open')`)
+    .bind(month, year, title)
+    .run();
+  revalidatePath("/admin");
+}
+
+export async function closeIssue(formData: FormData) {
+  await requireAdmin();
+  const id = String(formData.get("id"));
+  const { env } = await getCloudflareContext({ async: true });
+  await env.DB.prepare(
+    `UPDATE issues SET status = 'published', published_at = datetime('now') WHERE id = ?1`
+  )
+    .bind(id)
+    .run();
+  revalidatePath("/admin");
+}
+

@@ -29,7 +29,7 @@ export default async function EditArticlePage({
 }) {
   const { id } = await params;
   const user = await getCurrentUser();
-  if (!user) redirect("/dev-login");
+  if (!user) redirect("/api/auth/google/login");
 
   const { env } = await getCloudflareContext({ async: true });
   const article = await env.DB.prepare(

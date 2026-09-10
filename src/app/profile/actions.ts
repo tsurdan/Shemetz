@@ -10,7 +10,7 @@ const ALLOWED_TYPES = new Set(["image/png", "image/jpeg", "image/webp"]);
 
 export async function updateProfile(formData: FormData) {
   const user = await getCurrentUser();
-  if (!user) redirect("/dev-login");
+  if (!user) redirect("/api/auth/google/login");
 
   const name = String(formData.get("name") ?? "").trim();
   if (!name) throw new Error("שם לא יכול להיות ריק");

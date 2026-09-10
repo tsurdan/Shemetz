@@ -1,9 +1,16 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { getCurrentUser } from "@/lib/session";
 import { redirect } from "next/navigation";
-import { approveArticle, rejectArticle, unpublishArticle, addWriter } from "./actions";
+import { approveArticle, rejectArticle, unpublishArticle, addWriter, openIssue, closeIssue } from "./actions";
 import { Button } from "@/components/button";
-import { Check, X, EyeOff, UserPlus } from "lucide-react";
+import { Check, X, EyeOff, UserPlus, BookOpen, Lock } from "lucide-react";
+
+type IssueRow = {
+  id: number;
+  title: string;
+  month: number;
+  year: number;
+};
 
 type PendingRow = {
   id: number;
@@ -29,7 +36,7 @@ type WriterRow = {
 
 export default async function AdminPage() {
   const user = await getCurrentUser();
-  if (!user) redirect("/dev-login");
+  if (!user) redirect("/api/auth/google/login");
   if (user.role !== "admin") {
     return (
       <div className="mx-auto max-w-3xl px-4 py-12">
@@ -39,6 +46,10 @@ export default async function AdminPage() {
   }
 
   const { env } = await getCloudflareContext({ async: true });
+  const openIssueRow = await env.DB.prepare(
+    `SELECT id, title, month, year FROM issues WHERE status = 'open' ORDER BY id DESC LIMIT 1`
+  ).first<IssueRow>();
+
   const { results: pending } = await env.DB.prepare(
     `SELECT articles.id, articles.title, articles.word_count, users.name AS author_name, sections.name AS section_name
      FROM articles
@@ -63,6 +74,58 @@ export default async function AdminPage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-12">
       <h1 className="text-2xl font-bold">אזור ניהול</h1>
+
+      <h2 className="mt-8 text-lg font-semibold">הגיליון הנוכחי</h2>
+      {openIssueRow ? (
+        <div className="mt-2 flex items-center justify-between rounded border border-black/10 px-4 py-3">
+          <div>
+            <div className="font-medium">{openIssueRow.title}</div>
+            <div className="text-sm text-black/60">
+              {openIssueRow.month}/{openIssueRow.year} · פתוח לכתיבה
+            </div>
+          </div>
+          <form action={closeIssue}>
+            <input type="hidden" name="id" value={openIssueRow.id} />
+            <Button type="submit" variant="danger">
+              <Lock className="h-4 w-4" />
+              סגירת הגיליון
+            </Button>
+          </form>
+        </div>
+      ) : (
+        <form action={openIssue} className="mt-2 flex flex-wrap items-end gap-3">
+          <div>
+            <label className="block text-xs text-black/60">חודש</label>
+            <input
+              name="month"
+              type="number"
+              min={1}
+              max={12}
+              defaultValue={new Date().getMonth() + 1}
+              required
+              className="w-20 rounded border border-black/15 px-2 py-1.5 text-sm"
+            />
+          </div>
+          <div>
+            <label className="block text-xs text-black/60">שנה</label>
+            <input
+              name="year"
+              type="number"
+              defaultValue={new Date().getFullYear()}
+              required
+              className="w-24 rounded border border-black/15 px-2 py-1.5 text-sm"
+            />
+          </div>
+          <div>
+            <label className="block text-xs text-black/60">כותרת הגיליון</label>
+            <input name="title" required className="rounded border border-black/15 px-2 py-1.5 text-sm" />
+          </div>
+          <Button type="submit" variant="primary">
+            <BookOpen className="h-4 w-4" />
+            פתיחת גיליון
+          </Button>
+        </form>
+      )}
 
       <h2 className="mt-8 text-lg font-semibold">ממתינים לאישור</h2>
       {pending.length === 0 ? (

@@ -7,7 +7,7 @@ import { Save } from "lucide-react";
 
 export default async function ProfilePage() {
   const user = await getCurrentUser();
-  if (!user) redirect("/dev-login");
+  if (!user) redirect("/api/auth/google/login");
 
   const { env } = await getCloudflareContext({ async: true });
   const profile = await env.DB.prepare(

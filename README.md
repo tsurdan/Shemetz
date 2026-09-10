@@ -45,5 +45,5 @@ npm run preview     # build + run once in the actual Workers runtime (more accur
 npm run deploy       # build + deploy to Cloudflare
 ```
 
-There's also a `/dev-login` page that lets you sign in as any seeded user without going through Google - handy before you've configured `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET`, or for quick local testing afterwards.
+Login is Google OAuth only - make sure `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET` are set (see setup steps above) and that your own email already exists as a row in the `users` table before trying to log in.
 

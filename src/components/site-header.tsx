@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { getCurrentUser } from "@/lib/session";
-import { signOut } from "@/app/dev-login/actions";
+import { signOut } from "@/lib/session-actions";
 import { PenLine, ShieldCheck, LogIn, LogOut, ChevronDown } from "lucide-react";
 
 export async function SiteHeader() {

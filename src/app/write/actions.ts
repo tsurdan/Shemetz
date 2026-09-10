@@ -47,7 +47,7 @@ async function resolveSectionId(
 
 export async function saveArticle(formData: FormData) {
   const user = await getCurrentUser();
-  if (!user) redirect("/dev-login");
+  if (!user) redirect("/api/auth/google/login");
 
   const id = String(formData.get("id") ?? "");
   const title = String(formData.get("title") ?? "").trim();

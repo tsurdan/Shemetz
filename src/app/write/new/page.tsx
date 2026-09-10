@@ -6,7 +6,7 @@ import { saveArticle } from "../actions";
 
 export default async function NewArticlePage() {
   const user = await getCurrentUser();
-  if (!user) redirect("/dev-login");
+  if (!user) redirect("/api/auth/google/login");
 
   const { env } = await getCloudflareContext({ async: true });
   const { results: sections } = await env.DB.prepare(

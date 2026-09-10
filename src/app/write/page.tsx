@@ -30,7 +30,7 @@ const STATUS_BADGE_CLASSES: Record<string, string> = {
 export default async function WriteDashboard() {
   const user = await getCurrentUser();
   if (!user) {
-    redirect("/dev-login");
+    redirect("/api/auth/google/login");
   }
 
   const { env } = await getCloudflareContext({ async: true });
