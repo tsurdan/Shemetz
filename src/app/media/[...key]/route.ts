@@ -1,5 +1,4 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
-import { NextResponse } from "next/server";
 
 // Serves uploaded files back out of D1 (avatars, article images) - stored as BLOBs rather than in R2,
 // since R2 requires a payment method on file even for free-tier usage and D1 does not.
@@ -14,10 +13,12 @@ export async function GET(
     .first<{ content_type: string; data: ArrayBuffer }>();
 
   if (!file) {
-    return new NextResponse("Not found", { status: 404 });
+    return new Response("Not found", { status: 404 });
   }
 
-  return new NextResponse(file.data, {
+  // Re-wrapping the D1-sourced ArrayBuffer as a Uint8Array avoids a "failed to pipe response"
+  // error the OpenNext/Workers response layer throws when handed the raw cross-binding ArrayBuffer directly.
+  return new Response(new Uint8Array(file.data), {
     headers: {
       "Content-Type": file.content_type,
       "Cache-Control": "public, max-age=31536000, immutable",
