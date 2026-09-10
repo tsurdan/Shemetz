@@ -26,9 +26,14 @@ export async function POST(request: Request) {
 
   const { env } = await getCloudflareContext({ async: true });
   const id = crypto.randomUUID();
-  await env.DB.prepare(`INSERT INTO media_files (id, content_type, data) VALUES (?1, ?2, ?3)`)
-    .bind(id, file.type, await file.arrayBuffer())
-    .run();
+  try {
+    await env.DB.prepare(`INSERT INTO media_files (id, content_type, data) VALUES (?1, ?2, ?3)`)
+      .bind(id, file.type, await file.arrayBuffer())
+      .run();
+  } catch (error) {
+    console.error("Failed to store uploaded media", error);
+    return NextResponse.json({ error: "שמירת התמונה נכשלה בשרת" }, { status: 500 });
+  }
 
   return NextResponse.json({ url: `/media/${id}` });
 }

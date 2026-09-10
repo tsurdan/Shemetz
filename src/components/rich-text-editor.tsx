@@ -49,15 +49,23 @@ export function RichTextEditor({
   if (!editor) return null;
 
   async function uploadImage(file: File) {
-    const formData = new FormData();
-    formData.append("file", file);
-    const response = await fetch("/api/upload", { method: "POST", body: formData });
-    const data = (await response.json()) as { url?: string; error?: string };
-    if (!response.ok || !data.url) {
-      alert(data.error ?? "העלאת התמונה נכשלה");
-      return;
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      const response = await fetch("/api/upload", { method: "POST", body: formData });
+      const contentType = response.headers.get("content-type") ?? "";
+      if (!contentType.includes("application/json")) {
+        throw new Error(`תגובה לא צפויה מהשרת (${response.status})`);
+      }
+      const data = (await response.json()) as { url?: string; error?: string };
+      if (!response.ok || !data.url) {
+        throw new Error(data.error ?? "העלאת התמונה נכשלה");
+      }
+      editor?.chain().focus().setImage({ src: data.url }).run();
+    } catch (error) {
+      console.error("Inline image upload failed", error);
+      alert(error instanceof Error ? error.message : "העלאת התמונה נכשלה");
     }
-    editor?.chain().focus().setImage({ src: data.url }).run();
   }
 
   function toggleLink() {
