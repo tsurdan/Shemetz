@@ -4,7 +4,9 @@
 	"main": ".open-next/worker.js",
 	// Keep this at (or after) today's date - see https://developers.cloudflare.com/workers/configuration/compatibility-dates/
 	"compatibility_date": "2026-08-20",
-	"compatibility_flags": ["nodejs_compat"],
+	"compatibility_flags": [
+		"nodejs_compat"
+	],
 	"assets": {
 		"directory": ".open-next/assets",
 		"binding": "ASSETS"
@@ -14,14 +16,7 @@
 		{
 			"binding": "DB",
 			"database_name": "shemetz-db",
-			"database_id": "REPLACE_WITH_D1_DATABASE_ID"
-		}
-	],
-	// TODO (Phase 0): run `npx wrangler r2 bucket create shemetz-media` (bucket name must already exist)
-	"r2_buckets": [
-		{
-			"binding": "MEDIA",
-			"bucket_name": "shemetz-media"
+			"database_id": "1656b6c8-1163-46c4-89db-c58fbf68bc56"
 		}
 	],
 	"observability": {
